@@ -1,13 +1,25 @@
-import { Model, Table, Column, PrimaryKey, AllowNull, DataType, Default, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { Checkout } from './Checkout';
-import { PaidStatus } from '../types/paidStatus.type';
+import {
+  Model,
+  Table,
+  Column,
+  PrimaryKey,
+  AllowNull,
+  DataType,
+  Default,
+  ForeignKey,
+  BelongsTo,
+} from "sequelize-typescript";
+import { Checkout } from "./Checkout";
+import type { Checkout as ICheckout } from "./Checkout";
+
+import { PaidStatus } from "../types/paidStatus.type";
 
 @Table({
-  tableName: 'assetTransfers',
+  tableName: "assetTransfers",
   name: {
-    singular: 'assetTransfer',
-    plural: 'assetTransfers'
-  }
+    singular: "assetTransfer",
+    plural: "assetTransfers",
+  },
 })
 export class AssetTransfer extends Model<AssetTransfer> {
   @PrimaryKey
@@ -42,17 +54,17 @@ export class AssetTransfer extends Model<AssetTransfer> {
   @AllowNull(true)
   @Default(null)
   @Column(DataType.STRING(255))
-  transactionHash!: string
+  transactionHash!: string;
 
   @AllowNull(true)
   @Default(null)
   @Column(DataType.DATE)
-  settledAt!: Date
+  settledAt!: Date;
 
   @AllowNull(true)
   @Default(null)
   @Column(DataType.DATE)
-  cancelledAt!: Date
+  cancelledAt!: Date;
 
   @Column(DataType.DATE)
   createdAt!: Date;
@@ -63,7 +75,7 @@ export class AssetTransfer extends Model<AssetTransfer> {
   //#region Associations
 
   @BelongsTo(() => Checkout)
-  checkout!: Checkout;
+  checkout!: ICheckout;
   getCheckout!: () => Promise<Checkout>;
   setCheckout!: (caller: Checkout) => void;
 

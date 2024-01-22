@@ -1,8 +1,8 @@
 import { CheckoutRequest } from "./CheckoutRequest";
 import { Checkout } from "./Checkout";
-import { AssetTransfer } from "./AssetTransfer";
 import { Charge } from "./Charge";
 import { User } from "./User";
+import { AssetTransfer } from "./AssetTransfer";
 import { Partner } from "./Partner";
 import { AgreementLink } from "./AgreementLink";
 import { KycLink } from "./KycLink";

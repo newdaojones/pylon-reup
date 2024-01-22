@@ -1,20 +1,21 @@
 import "reflect-metadata";
-import { NextApiRequest, NextApiResponse } from "next";
 import { ApolloServer } from "apollo-server-micro";
 import { AuthChecker, buildSchema } from "type-graphql";
-import Cors from "cors";
 import { resolvers } from "@src/server/resolvers";
+import { handler } from "@src/server/middleware/handler";
+import { allowMethods } from "@src/server/middleware/method";
+import { authMiddlewareForGraphql } from "@src/server/middleware/auth-graphql";
+import { CustomNextApiRequest } from "@src/server/types/request.type";
+import { PageConfig } from "next";
+import { UserResolver } from "@src/server/resolvers/user.resolver";
 import { Context } from "vm";
+import { HelloWorldResolver } from "@src/server/resolvers/helloworld.resolver";
 
-const cors = Cors({
-  methods: ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  credentials: true,
-  origin: [
-    "https://studio.apollographql.com",
-    "http://localhost:8000",
-    "http://localhost:3000",
-  ],
-});
+export const config: PageConfig = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export const authChecker: AuthChecker<Context> = (
   { context: { user } },
@@ -35,43 +36,56 @@ export const authChecker: AuthChecker<Context> = (
   return false;
 };
 
-function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: any) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result: any) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
+const context = ({
+  req,
+  connection,
+}: {
+  req: CustomNextApiRequest;
+  connection: any;
+}) => {
+  if (connection) {
+    return connection.context;
+  }
 
-      return resolve(result);
-    });
-  });
-}
+  return {
+    user: req.user,
+  };
+};
 
-async function initGraphqlServer() {
-  const schema = await buildSchema({
-    resolvers,
+const apolloServer = new ApolloServer({
+  schema: await buildSchema({
+    resolvers: [HelloWorldResolver],
     authChecker,
-  });
+  }),
+  context,
+  csrfPrevention: false,
+});
 
-  const server = new ApolloServer({
-    schema,
-    csrfPrevention: true,
-    context: ({ req, res }: { req: NextApiRequest; res: NextApiResponse }) => ({
-      req,
-      res,
-    }),
-  });
+await apolloServer.start();
 
-  return server;
-}
+export default apolloServer.createHandler({ path: "/api/graphql" });
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  await runMiddleware(req, res, cors);
-  // await connectDB();
-  const server = await initGraphqlServer();
-  await server.start();
-  await server.createHandler({ path: "/api/graphql" })(req, res);
-}
+// async function initGraphqlServer() {
+//   const schema = await buildSchema({
+//     resolvers,
+//     authChecker,
+//   });
+
+//   const server = new ApolloServer({
+//     schema,
+//     csrfPrevention: false,
+//     context,
+//   });
+
+//   return server;
+// }
+
+// export default handler(
+//   allowMethods(["POST", "GET"]),
+//   authMiddlewareForGraphql,
+//   async (req, res) => {
+//     const server = await initGraphqlServer();
+//     await server.start();
+//     await server.createHandler({ path: "/api/graphql" })(req, res);
+//   }
+// );

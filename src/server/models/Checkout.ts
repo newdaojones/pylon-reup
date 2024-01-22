@@ -15,6 +15,7 @@ import { PaidStatus } from "../types/paidStatus.type";
 import { TipType } from "../types/tip.type";
 import { newDinero } from "../utils/currency";
 import { CheckoutRequest } from "./CheckoutRequest";
+import type { CheckoutRequest as ICheckoutRequest } from "./CheckoutRequest";
 import { User } from "./User";
 import { Charge } from "./Charge";
 import { AssetTransfer } from "./AssetTransfer";
@@ -148,7 +149,7 @@ export class Checkout extends Model<Checkout> {
   //#region Associations
 
   @BelongsTo(() => CheckoutRequest)
-  checkoutRequest!: CheckoutRequest;
+  checkoutRequest!: ICheckoutRequest;
   getCheckoutRequest!: () => Promise<CheckoutRequest>;
   setCheckoutRequest!: (checkoutRequest: CheckoutRequest) => void;
 

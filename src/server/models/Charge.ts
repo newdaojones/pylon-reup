@@ -10,6 +10,7 @@ import {
   BelongsTo,
 } from "sequelize-typescript";
 import { Checkout } from "./Checkout";
+import type { Checkout as ICheckout } from "./Checkout";
 
 @Table({
   tableName: "charges",
@@ -90,7 +91,7 @@ export class Charge extends Model<Charge> {
   //#region Associations
 
   @BelongsTo(() => Checkout)
-  checkout!: Checkout;
+  checkout!: ICheckout;
   getCheckout!: () => Promise<Checkout>;
   setCheckout!: (caller: Checkout) => void;
 
