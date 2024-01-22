@@ -1,15 +1,14 @@
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server-micro";
-import { AuthChecker, buildSchema } from "type-graphql";
-import { resolvers } from "@src/server/resolvers";
+import { AuthChecker, buildTypeDefsAndResolvers } from "type-graphql";
+import { graphqlResolvers } from "@src/server/resolvers";
 import { handler } from "@src/server/middleware/handler";
 import { allowMethods } from "@src/server/middleware/method";
 import { authMiddlewareForGraphql } from "@src/server/middleware/auth-graphql";
 import { CustomNextApiRequest } from "@src/server/types/request.type";
 import { PageConfig } from "next";
-import { UserResolver } from "@src/server/resolvers/user.resolver";
 import { Context } from "vm";
-import { HelloWorldResolver } from "@src/server/resolvers/helloworld.resolver";
+import { makeExecutableSchema } from "graphql-tools";
 
 export const config: PageConfig = {
   api: {
@@ -52,40 +51,34 @@ const context = ({
   };
 };
 
-const apolloServer = new ApolloServer({
-  schema: await buildSchema({
-    resolvers: [HelloWorldResolver],
+export const schema = async () => {
+  const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
+    resolvers: graphqlResolvers,
     authChecker,
-  }),
-  context,
-  csrfPrevention: false,
-});
+    emitSchemaFile: "./src/graphql/schema.graphql",
+    validate: false,
+  });
+  return makeExecutableSchema({ typeDefs, resolvers: resolvers });
+};
 
-await apolloServer.start();
+async function initGraphqlServer() {
+  const typeSchema = await schema();
 
-export default apolloServer.createHandler({ path: "/api/graphql" });
+  const server = new ApolloServer({
+    schema: typeSchema,
+    csrfPrevention: false,
+    context,
+  });
 
-// async function initGraphqlServer() {
-//   const schema = await buildSchema({
-//     resolvers,
-//     authChecker,
-//   });
+  return server;
+}
 
-//   const server = new ApolloServer({
-//     schema,
-//     csrfPrevention: false,
-//     context,
-//   });
-
-//   return server;
-// }
-
-// export default handler(
-//   allowMethods(["POST", "GET"]),
-//   authMiddlewareForGraphql,
-//   async (req, res) => {
-//     const server = await initGraphqlServer();
-//     await server.start();
-//     await server.createHandler({ path: "/api/graphql" })(req, res);
-//   }
-// );
+export default handler(
+  allowMethods(["POST", "GET"]),
+  authMiddlewareForGraphql,
+  async (req, res) => {
+    const server = await initGraphqlServer();
+    await server.start();
+    await server.createHandler({ path: "/api/graphql" })(req, res);
+  }
+);
