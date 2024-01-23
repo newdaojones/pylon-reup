@@ -14,7 +14,7 @@ export namespace useWindowFocus {
  */
 // Note: Inspired by https://github.com/jpalumickas/use-window-focus/blob/main/src/index.ts.
 export function useWindowFocus(): useWindowFocus.Return {
-  const [isWindowFocused, setIsWindowFocused] = useState(false); // Focus for first render.
+  const [isWindowFocused, setIsWindowFocused] = useState(true); // Focus for first render.
 
   useEffect(() => {
     const handleVisibilityChange = () => {

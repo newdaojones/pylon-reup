@@ -69,6 +69,9 @@ export class CheckoutType {
   @Field({ nullable: true })
   updatedAt: Date;
 
-  @Field(type => TransactionType, { nullable: true, description: 'transaction' })
-  transaction: TransactionType
+  @Field((type) => TransactionType, {
+    nullable: true,
+    description: "transaction",
+  })
+  transaction: TransactionType;
 }

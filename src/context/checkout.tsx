@@ -135,6 +135,7 @@ export const CheckoutProvider = (props: {
   const checkoutError = useMemo(() => errorCheckout || errorCheckoutWithoutUser, [errorCheckout, errorCheckoutWithoutUser])
   const checkoutId = useMemo(() => checkout?.id, [checkout])
   const isCheckingOut = useMemo(() => loadingCheckout || loadingCheckoutWithout, [loadingCheckout, loadingCheckoutWithout])
+  console.log(checkoutId)
   const { data: transactionResponse } = useSubscription(SUBSCRIPTION, {
     variables: {
       id: checkoutId,

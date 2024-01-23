@@ -1,16 +1,22 @@
 import "reflect-metadata";
 import "@src/server/models";
 
+import { Container } from "typedi";
 import { ApolloServer } from "apollo-server-micro";
-import { AuthChecker, buildTypeDefsAndResolvers } from "type-graphql";
-import { graphqlResolvers } from "@src/server/resolvers";
+import {
+  AuthChecker,
+  buildSchema,
+  buildTypeDefsAndResolvers,
+} from "type-graphql";
 import { handler } from "@src/server/middleware/handler";
 import { allowMethods } from "@src/server/middleware/method";
 import { authMiddlewareForGraphql } from "@src/server/middleware/auth-graphql";
 import { CustomNextApiRequest } from "@src/server/types/request.type";
 import { PageConfig } from "next";
 import { Context } from "vm";
-import { makeExecutableSchema } from "graphql-tools";
+import { UserResolver } from "@src/server/resolvers/user.resolver";
+import { CheckoutResolver } from "@src/server/resolvers/checkout.resolver";
+import { CheckoutRequestResolver } from "@src/server/resolvers/checkoutRequest.resolver";
 
 export const config: PageConfig = {
   api: {
@@ -53,23 +59,23 @@ const context = ({
   };
 };
 
-export const schema = async () => {
-  const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
-    resolvers: graphqlResolvers,
-    authChecker,
-    emitSchemaFile: "./src/graphql/schema.graphql",
-    validate: false,
-  });
-  return makeExecutableSchema({ typeDefs, resolvers: resolvers });
-};
-
 async function initGraphqlServer() {
-  const typeSchema = await schema();
+  const schema = await buildSchema({
+    resolvers: [
+      UserResolver,
+      CheckoutResolver,
+      CheckoutRequestResolver,
+      // HelloWorldResolver,
+    ],
+    authChecker,
+    container: Container,
+  });
 
   const server = new ApolloServer({
-    schema: typeSchema,
+    schema,
     csrfPrevention: false,
     context,
+    plugins: [],
   });
 
   return server;

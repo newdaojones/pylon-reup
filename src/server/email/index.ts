@@ -1,6 +1,8 @@
 import ejs from "ejs";
 import { log } from "../utils";
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+import path from "path";
+import getConfig from "next/config";
 
 const ses = new SESv2Client({
   region: "us-east-2",
@@ -22,10 +24,11 @@ export interface ReceiptData {
 class EmailService {
   async sendReceiptEmail(emailAddress: string, data: ReceiptData) {
     try {
-      const emailString = await ejs.renderFile(
-        __dirname + "/templates/receipt.ejs",
-        data
+      const template = path.join(
+        getConfig().serverRuntimeConfig.PROJECT_ROOT,
+        "/public/static/templates/receipt.ejs"
       );
+      const emailString = await ejs.renderFile(template, data);
       const command = new SendEmailCommand({
         FromEmailAddress: "tools@jxndao.com",
         Destination: {

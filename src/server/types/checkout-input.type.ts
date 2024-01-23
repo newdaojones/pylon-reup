@@ -1,6 +1,5 @@
-import { IsNumber, isNumber, IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 import { Field, InputType } from "type-graphql";
-import { TipType } from "./tip.type";
 
 @InputType()
 export class CheckoutInputType {

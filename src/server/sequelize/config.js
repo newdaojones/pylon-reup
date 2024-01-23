@@ -10,13 +10,13 @@ const config = {
   charset: 'utf8',
   collate: 'utf8_general_ci',
   dialect: 'postgres',
-  dialectOptions: process.env.NODE_ENV === 'development' ? undefined : {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-    decimalNumbers: true,
-  },
+  // dialectOptions: process.env.NODE_ENV === 'development' ? undefined : {
+  //   ssl: {
+  //     require: true,
+  //     rejectUnauthorized: false,
+  //   },
+  //   decimalNumbers: true,
+  // },
   pool: {
     max: 100,
     min: 0,
