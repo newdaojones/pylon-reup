@@ -1,8 +1,6 @@
-import { Field, ID, ObjectType } from "type-graphql";
-import { CheckoutStep } from "./checkoutStep.type";
-import { PaidStatus } from "./paidStatus.type";
+import { Field, ObjectType } from "type-graphql";
 
-@ObjectType()
+@ObjectType("TransactionType")
 export class TransactionType {
   @Field()
   checkoutId: string;

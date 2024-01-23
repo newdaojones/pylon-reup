@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql";
 
-@ObjectType()
+@ObjectType("UserVerifyType")
 export class UserVerifyType {
   @Field()
   userId: string;

@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
 import { GraphQLJSONObject } from "graphql-type-json";
 
-@ObjectType()
+@ObjectType("SubscriptionType")
 export class SubscriptionType {
   @Field()
   id: string;

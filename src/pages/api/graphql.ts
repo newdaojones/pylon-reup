@@ -1,13 +1,8 @@
 import "reflect-metadata";
 import "@src/server/models";
 
-import { Container } from "typedi";
 import { ApolloServer } from "apollo-server-micro";
-import {
-  AuthChecker,
-  buildSchema,
-  buildTypeDefsAndResolvers,
-} from "type-graphql";
+import { AuthChecker, buildSchema } from "type-graphql";
 import { handler } from "@src/server/middleware/handler";
 import { allowMethods } from "@src/server/middleware/method";
 import { authMiddlewareForGraphql } from "@src/server/middleware/auth-graphql";
@@ -68,7 +63,7 @@ async function initGraphqlServer() {
       // HelloWorldResolver,
     ],
     authChecker,
-    container: Container,
+    // container: Container,
   });
 
   const server = new ApolloServer({

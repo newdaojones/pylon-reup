@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType } from "type-graphql";
 import { CheckoutType } from "./checkout.type";
 
-@ObjectType()
+@ObjectType("CheckoutRequestType")
 export class CheckoutRequestType {
   @Field(() => ID)
   id: number;

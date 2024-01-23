@@ -1,7 +1,7 @@
 import { IsNumber, IsOptional, IsString } from "class-validator";
 import { Field, InputType } from "type-graphql";
 
-@InputType()
+@InputType("CheckoutInputType")
 export class CheckoutInputType {
   @IsString()
   @IsOptional()
