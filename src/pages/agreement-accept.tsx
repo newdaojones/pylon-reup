@@ -34,7 +34,7 @@ export default function AgreementAccept() {
       // Remove the event listener when component unmounts
       return () => window.removeEventListener('load', onPageLoad);
     }
-  }, []);
+  }, [subSignedAgreementId]);
 
   return <></>
 }

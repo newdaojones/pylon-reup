@@ -24,8 +24,6 @@ export const authMiddlewareForGraphql: Middleware = async (req, res, next) => {
         req.user = trimUser(data.user);
       }
 
-      console.log("here------------");
-
       next();
     }
   )(req, res, next);

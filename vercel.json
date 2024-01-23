@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "crons": [
+    {
+      "path": "/api/jobs/processCheckoutWorker",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/jobs/kyc10MinutesWorker",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/jobs/syncKycInAnHour",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/jobs/syncKycIn2Days",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/jobs/syncKycIn10Days",
+      "schedule": "0 8 * * *"
+    }
+  ],
+  "functions": {
+    "api/**/*": {
+      "maxDuration": 300
+    }
+  }
+}

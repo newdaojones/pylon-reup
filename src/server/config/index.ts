@@ -3,7 +3,7 @@ require("dotenv").config();
 export const Config = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpires: 24,
-  checkoutPublicKey: process.env.CHECKOUT_PUBLIC_KEY,
+  checkoutPublicKey: process.env.NEXT_PUBLIC_CHECKOUT_PUBLIC_KEY,
   checkoutSecureKey: process.env.CHECKOUT_SECURE_KEY,
   checkoutProcessingChannelId: process.env.CHECKOUT_PROCESSING_CHANNEL_ID,
   bridgeApiKey: process.env.BRIDGE_API_KEY,

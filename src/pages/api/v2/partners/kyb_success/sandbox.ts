@@ -1,3 +1,5 @@
+import "@src/server/models";
+
 import { Config } from "@src/server/config";
 import { handler } from "@src/server/middleware/handler";
 import { allowMethods } from "@src/server/middleware/method";

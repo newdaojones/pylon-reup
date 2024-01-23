@@ -1,24 +1,17 @@
 import "@src/server/models";
 
-import { Config } from "@src/server/config";
 import { handler } from "@src/server/middleware/handler";
 import { allowMethods } from "@src/server/middleware/method";
 import { KycLink } from "@src/server/models/KycLink";
 import { Partner } from "@src/server/models/Partner";
 import { BridgeService } from "@src/server/services/bridgeService";
-import { CustomNextApiRequest } from "@src/server/types/request.type";
 import { log } from "@src/server/utils";
 import { normalizeStatus } from "@src/server/utils/convert";
 import { check, validationResult } from "express-validator";
-import { NextApiResponse } from "next";
-import { authMiddlewareForPartner } from "@src/server/middleware/auth-partner";
 
 const bridgeService = BridgeService.getInstance();
 
-const createPartner = async (
-  req: CustomNextApiRequest,
-  res: NextApiResponse
-) => {
+export default handler(allowMethods(["POST"]), async (req, res) => {
   const data = req.body;
 
   log.info({
@@ -121,104 +114,4 @@ const createPartner = async (
       message: err.message,
     });
   }
-};
-
-const updatePartner = async (
-  req: CustomNextApiRequest,
-  res: NextApiResponse
-) => {
-  const partner = req.partner;
-  const { webhook, displayName, fee } = req.body;
-
-  log.info({
-    func: "partners/partners",
-    webhook,
-    displayName,
-    partnerId: partner?.id,
-    fee,
-  });
-  try {
-    if (!partner) {
-      throw new Error("Partner not found");
-    }
-
-    await check("webhook", "Webhook url is invalid")
-      .optional()
-      .isURL()
-      .run(req);
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      errors.throw();
-    }
-
-    if (fee !== undefined && fee < Config.defaultFee.minFee) {
-      throw new Error(
-        `The fee should greater than or equal to ${Config.defaultFee.minFee}%`
-      );
-    }
-
-    await partner.update({
-      fee,
-      webhook,
-      displayName,
-    });
-
-    res.status(200).send({
-      message: "success",
-    });
-  } catch (error: any) {
-    log.info(
-      {
-        func: "partners",
-        webhook,
-        displayName,
-        partnerId: partner?.id,
-      },
-      "Failed Update Partner"
-    );
-
-    if (error.mapped && error.mapped()) {
-      return res.status(422).send({
-        message: "Failed validation",
-        errors: error.mapped(),
-      });
-    }
-
-    if (error.code) {
-      return res.status(400).send(error);
-    }
-
-    res.status(400).send({
-      message: error.message || "Error",
-    });
-  }
-};
-
-export default handler(
-  allowMethods(["PATCH", "GET"]),
-  authMiddlewareForPartner,
-  async (req, res) => {
-    if (req.method === "GET") {
-      return res.status(200).send({
-        id: req.partner.id,
-        status: req.partner.status,
-        companyName: req.partner.companyName,
-        displayName: req.partner.displayName,
-        firstName: req.partner.firstName,
-        lastName: req.partner.lastName,
-        email: req.partner.email,
-        phoneNumber: req.partner.phoneNumber,
-        streetAddress: req.partner.streetAddress,
-        streetAddress2: req.partner.streetAddress2,
-        city: req.partner.city,
-        state: req.partner.state,
-        postalCode: req.partner.postalCode,
-        country: req.partner.country,
-        webhook: req.partner.webhook,
-      });
-    }
-
-    return updatePartner(req, res);
-  }
-);
+});

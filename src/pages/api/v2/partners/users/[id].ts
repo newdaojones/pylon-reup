@@ -1,3 +1,5 @@
+import "@src/server/models";
+
 import { handler } from "@src/server/middleware/handler";
 import { allowMethods } from "@src/server/middleware/method";
 import { authMiddlewareForPartner } from "@src/server/middleware/auth-partner";

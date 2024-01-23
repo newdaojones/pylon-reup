@@ -1,8 +1,10 @@
+import "@src/server/models";
+
 import { handler } from "@src/server/middleware/handler";
 import { allowMethods } from "@src/server/middleware/method";
-import { Partner } from "@src/server/models/Partner";
 import { UserService } from "@src/server/services/userService";
 import { check, validationResult } from "express-validator";
+import { Partner } from "@src/server/models/Partner";
 
 export default handler(allowMethods(["POST"]), async (req, res) => {
   try {

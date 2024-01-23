@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import "@src/server/models";
+
 import { ApolloServer } from "apollo-server-micro";
 import { AuthChecker, buildTypeDefsAndResolvers } from "type-graphql";
 import { graphqlResolvers } from "@src/server/resolvers";
